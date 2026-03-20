@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSRC Interactive Lessons — Structured Steps to Reading Comprehension</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #4a7c59; --green-dk: #3a6045; --green-lt: #ddf0e4;
+    --coral: #E66B5D; --gold: #F3D25B; --gold-dk: #b8860b;
+    --text: #444444; --muted: #888888; --bg: #f4f8f5;
+    --parallel: #7a5c9e;
+  }
+  body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header {
+    background: var(--green); padding: 24px 40px;
+    display: flex; align-items: center; gap: 20px;
+    border-bottom: 4px solid var(--coral);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-logo { width: 44px; height: 44px; background: var(--coral); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: white; flex-shrink: 0; }
+  .header-text h1 { font-size: 18px; font-weight: 700; color: white; }
+  .header-text p  { font-size: 11px; color: var(--green-lt); margin-top: 2px; }
+  .header-stats { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .stat { background: rgba(255,255,255,0.15); color: white; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+  .stat.gold { background: var(--gold); color: var(--green-dk); font-weight: 600; }
+  .legend { display: flex; gap: 20px; padding: 10px 40px; background: white; border-bottom: 1px solid #c8e0cd; font-size: 11px; color: var(--muted); align-items: center; flex-wrap: wrap; }
+  .li { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .dg{background:#2ecc71;} .dn{background:var(--green);} .dp{background:var(--parallel);} .dc{background:#ddd;}
+  .phase-nav { display: flex; gap: 4px; padding: 14px 40px 0; background: white; border-bottom: 1px solid #c8e0cd; overflow-x: auto; }
+  .phase-tab { padding: 5px 12px; border-radius: 6px 6px 0 0; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid #c8e0cd; border-bottom: none; background: var(--bg); color: var(--muted); white-space: nowrap; transition: all 0.15s; }
+  .phase-tab:hover { background: var(--green-lt); color: var(--green); }
+  .phase-tab.active { background: white; color: var(--green); }
+  .phase-tab.par { color: var(--parallel); }
+  .phase-tab.par:hover { background: #f0eaf8; }
+  .phase-tab.par.active { color: var(--parallel); }
+  main { padding: 28px 40px 60px; }
+  .parallel-banner { background: #f5f0fc; border: 1.5px solid #c9b8e8; border-radius: 10px; padding: 12px 18px; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 12px; }
+  .par-badge { background: var(--parallel); color: white; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; margin-top: 1px; flex-shrink: 0; }
+  .par-text p { font-size: 12px; color: var(--parallel); font-weight: 600; margin-bottom: 2px; }
+  .par-text span { font-size: 11px; color: #7a6a8a; }
+  .phase-section { margin-bottom: 44px; }
+  .phase-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .phase-pill { color: white; font-size: 10px; font-weight: 600; padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
+  .seq { background: var(--green); }
+  .par-pill { background: var(--parallel); }
+  .phase-title { font-size: 14px; font-weight: 600; }
+  .seq-title { color: var(--green); }
+  .par-title { color: var(--parallel); }
+  .phase-rule { flex: 1; height: 1px; background: var(--green-lt); }
+  .par-rule { background: #c9b8e8; }
+  .phase-count { font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .phase-desc { font-size: 11px; color: var(--muted); margin-bottom: 14px; font-style: italic; }
+  .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+  .card { background: white; border-radius: 8px; border: 1.5px solid #c8e0cd; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; transition: box-shadow 0.15s, transform 0.1s; text-decoration: none; color: inherit; }
+  .card.par-card { border-color: #c9b8e8; }
+  .card.hr { border-left: 4px solid #2ecc71; cursor: pointer; }
+  .card.hr:hover { box-shadow: 0 4px 14px rgba(74,124,89,0.13); transform: translateY(-1px); }
+  .card.db { border-left: 4px solid var(--green); }
+  .card.par-card.db { border-left: 4px solid var(--parallel); }
+  .card.nb { border-left: 4px solid #ddd; opacity: 0.5; }
+  .card-meta { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .card-concept { font-size: 13px; font-weight: 600; line-height: 1.3; color: var(--green); }
+  .card.par-card .card-concept { color: var(--parallel); }
+  .card-status { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; margin-top: 2px; }
+  .card.hr .card-status { color: #1fa85a; }
+  .card.db .card-status { color: var(--green); }
+  .card.par-card.db .card-status { color: var(--parallel); }
+  .card.nb .card-status { color: var(--muted); }
+  footer { text-align: center; font-size: 11px; color: var(--muted); padding: 20px 40px; border-top: 1px solid #c8e0cd; }
+  footer span { color: var(--coral); }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-logo">SSRC</div>
+  <div class="header-text">
+    <h1>Structured Steps to Reading Comprehension</h1>
+    <p>Interactive Lesson Library · OGC#622 · Michelle</p>
+  </div>
+  <div class="header-stats">
+    <span class="stat" id="s-html">—</span>
+    <span class="stat" id="s-docx">—</span>
+    <span class="stat gold">7 phases · 44 lessons</span>
+  </div>
+</header>
+<div class="legend">
+  <span>Status:</span>
+  <span class="li"><span class="dot dg"></span> HTML ready to teach</span>
+  <span class="li"><span class="dot dn"></span> Docx built, HTML pending</span>
+  <span class="li"><span class="dot dc"></span> Not yet built</span>
+  <span class="li"><span class="dot dp"></span> Phase 3 — parallel strand</span>
+</div>
+<div class="phase-nav" id="phase-nav"></div>
+<main id="lib"></main>
+<footer>Structured Literacy Innovations · slinnovations.com · <span>OGC#622</span></footer>
+<script>
+// ═══════════════════════════════════════════════════════════════
+// LESSON DATA — edit only this section to update lesson status
+// status: "html" = HTML ready | "docx" = docx built | "coming" = not yet built
+// file: HTML filename in the phase folder — leave "" if not html
+// ═══════════════════════════════════════════════════════════════
+const PHASES = [
+  { phase:1, label:"Phase 1", folder:"Phase_1", title:"Literal Comprehension", desc:"Understanding what the text explicitly says", par:false, lessons:[
+    { num:1, concept:"Introduction to Retelling",                  status:"docx",   file:"" },
+    { num:2, concept:"Retelling Practice — Building to 5–6 Events",status:"docx",   file:"" },
+    { num:3, concept:"Identifying Stated Details",                 status:"coming", file:"" },
+    { num:4, concept:"Sequencing Events",                          status:"coming", file:"" },
+    { num:5, concept:"Understanding Question Words",               status:"docx",   file:"" },
+    { num:6, concept:"Phase 1 Integration",                        status:"coming", file:"" },
+  ]},
+  { phase:2, label:"Phase 2", folder:"Phase_2", title:"Main Idea & Summarizing", desc:"Determining what is most important", par:false, lessons:[
+    { num:1, concept:"Identifying the Topic",                      status:"docx",   file:"" },
+    { num:2, concept:"Stated Main Idea",                           status:"coming", file:"" },
+    { num:3, concept:"Main Idea vs. Supporting Details",           status:"coming", file:"" },
+    { num:4, concept:"One-Sentence Summary",                       status:"coming", file:"" },
+    { num:5, concept:"Multi-Paragraph Summary",                    status:"coming", file:"" },
+    { num:6, concept:"When the Main Idea is Hidden",               status:"coming", file:"" },
+  ]},
+  { phase:3, label:"Phase 3", folder:"Phase_3", title:"Vocabulary & Word-Level Comprehension", desc:"Parallel strand — woven in throughout the programme, not taught as a separate block", par:true, lessons:[
+    { num:1, concept:"Prefixes & Suffixes",                        status:"coming", file:"" },
+    { num:2, concept:"Roots & Word Families",                      status:"coming", file:"" },
+    { num:3, concept:"Context Clues",                              status:"coming", file:"" },
+    { num:4, concept:"Multiple-Meaning Words",                     status:"coming", file:"" },
+    { num:5, concept:"Academic & Domain Vocabulary",               status:"coming", file:"" },
+    { num:6, concept:"Vocabulary Strategies Review",               status:"coming", file:"" },
+  ]},
+  { phase:4, label:"Phase 4", folder:"Phase_4", title:"Text Structure & Features", desc:"Recognising how texts are organised", par:false, lessons:[
+    { num:1, concept:"Narrative Structure",                        status:"coming", file:"" },
+    { num:2, concept:"Description & Sequence Structures",          status:"coming", file:"" },
+    { num:3, concept:"Compare/Contrast & Cause/Effect Structures", status:"coming", file:"" },
+    { num:4, concept:"Problem/Solution Structure",                 status:"coming", file:"" },
+    { num:5, concept:"Text Features",                              status:"coming", file:"" },
+    { num:6, concept:"Identifying Text Structure in Longer Texts", status:"coming", file:"" },
+    { num:7, concept:"Phase 4 Integration",                        status:"coming", file:"" },
+  ]},
+  { phase:5, label:"Phase 5", folder:"Phase_5", title:"Inferencing & Deeper Meaning", desc:"Reading between the lines", par:false, lessons:[
+    { num:1, concept:"Implied Main Idea Across Paragraphs",        status:"coming", file:"" },
+    { num:2, concept:"Simple Inferences",                          status:"coming", file:"" },
+    { num:3, concept:"Cause & Effect Inference",                   status:"coming", file:"" },
+    { num:4, concept:"Character Inference",                        status:"coming", file:"" },
+    { num:5, concept:"Predicting with Evidence",                   status:"coming", file:"" },
+  ]},
+  { phase:6, label:"Phase 6", folder:"Phase_6", title:"Critical & Analytical Thinking", desc:"Evaluating texts — author's purpose, bias, and argument", par:false, lessons:[
+    { num:1, concept:"Author's Purpose",                           status:"coming", file:"" },
+    { num:2, concept:"Claims & Evidence",                          status:"coming", file:"" },
+    { num:3, concept:"Identifying the Thesis",                     status:"coming", file:"" },
+    { num:4, concept:"Point of View",                              status:"coming", file:"" },
+    { num:5, concept:"Comparing Texts",                            status:"coming", file:"" },
+    { num:6, concept:"Evaluating Arguments",                       status:"coming", file:"" },
+    { num:7, concept:"Thesis in Extended Texts",                   status:"coming", file:"" },
+    { num:8, concept:"Phase 6 Integration",                        status:"coming", file:"" },
+  ]},
+  { phase:7, label:"Phase 7", folder:"Phase_7", title:"Integration & Independence", desc:"Flexible, self-directed reading comprehension", par:false, lessons:[
+    { num:1, concept:"Multi-Strategy Use",                         status:"coming", file:"" },
+    { num:2, concept:"Self-Monitoring",                            status:"coming", file:"" },
+    { num:3, concept:"Generating Questions",                       status:"coming", file:"" },
+    { num:4, concept:"Fix-Up Strategies",                          status:"coming", file:"" },
+    { num:5, concept:"Cross-Content Transfer",                     status:"coming", file:"" },
+    { num:6, concept:"Phase 7 Capstone",                           status:"coming", file:"" },
+  ]},
+];
+
+const BASE = "https://slinnovations.github.io/SSRC_Interactive_Lessons/";
+
+function cls(s,par){ return 'card'+(par?' par-card':'')+(s==='html'?' hr':s==='docx'?' db':' nb'); }
+function ico(s,par){
+  const c = par?'#7a5c9e':'#4a7c59';
+  if(s==='html') return '<svg width="9" height="9" viewBox="0 0 9 9"><circle cx="4.5" cy="4.5" r="4.5" fill="#2ecc71"/></svg> HTML ready';
+  if(s==='docx') return `<svg width="9" height="9" viewBox="0 0 9 9"><circle cx="4.5" cy="4.5" r="4.5" fill="${c}"/></svg> Docx built`;
+  return '<svg width="9" height="9" viewBox="0 0 9 9"><circle cx="4.5" cy="4.5" r="4.5" fill="#ddd"/></svg> Not yet built';
+}
+
+function render(){
+  let h=0,d=0;
+  PHASES.forEach(p=>p.lessons.forEach(l=>{ if(l.status==='html')h++; if(l.status==='docx')d++; }));
+  document.getElementById('s-html').textContent=h+' HTML ready';
+  document.getElementById('s-docx').textContent=d+' docx built';
+
+  document.getElementById('phase-nav').innerHTML=PHASES.map((p,i)=>
+    `<div class="phase-tab${i===0?' active':''}${p.par?' par':''}" onclick="go(${p.phase},this)">${p.label}</div>`
+  ).join('');
+
+  document.getElementById('lib').innerHTML=PHASES.map(p=>{
+    const built=p.lessons.filter(l=>l.status!=='coming').length;
+    const pb=p.par?'phase-pill par-pill':'phase-pill seq';
+    const tb=p.par?'phase-title par-title':'phase-title seq-title';
+    const rb=p.par?'phase-rule par-rule':'phase-rule';
+    const note=p.par?`<div class="parallel-banner"><span class="par-badge">Parallel strand</span><div class="par-text"><p>Phase 3 runs alongside all other phases</p><span>Vocabulary lessons are woven in throughout — not taught as a separate block. No exit check required.</span></div></div>`:'';
+    const lc=p.lessons.map(l=>`<a class="${cls(l.status,p.par)}" ${l.status==='html'?`href="${BASE}${p.folder}/${l.file}" target="_blank"`:''}><div class="card-meta">Phase ${p.phase} · Lesson ${l.num}</div><div class="card-concept">${l.concept}</div><div class="card-status">${ico(l.status,p.par)}</div></a>`).join('');
+    return `<div class="phase-section" id="ph${p.phase}">${note}<div class="phase-header"><span class="${pb}">${p.label}</span><span class="${tb}">${p.title}</span><span class="${rb}"></span><span class="phase-count">${built}/${p.lessons.length} built</span></div><p class="phase-desc">${p.desc}</p><div class="lesson-grid">${lc}</div></div>`;
+  }).join('');
+}
+
+function go(n,tab){
+  document.querySelectorAll('.phase-tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  document.getElementById('ph'+n)?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+render();
+</script>
+</body>
+</html>
